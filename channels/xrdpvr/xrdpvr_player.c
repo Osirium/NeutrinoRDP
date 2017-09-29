@@ -83,6 +83,10 @@ debian 8
 
 */
 
+#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
+#endif
+
 #if LIBAVCODEC_VERSION_MAJOR == 52 && LIBAVCODEC_VERSION_MINOR == 20
 #define DISTRO_DEBIAN6
 #endif
@@ -407,7 +411,11 @@ set_audio_config(void* vp, char* extradata, int extradata_size,
 #if defined(DISTRO_DEBIAN8)
     av_force_cpu_flags(AV_CPU_FLAG_SSE2 | AV_CPU_FLAG_MMX2);
 #else
+#if LIBAVCODEC_VERSION_MAJOR < 55
     psi->audio_codec_ctx->dsp_mask = AV_CPU_FLAG_SSE2 | AV_CPU_FLAG_MMX2;
+#else
+    av_set_cpu_flags_mask(AV_CPU_FLAG_SSE2 | AV_CPU_FLAG_MMX2);
+#endif
 #endif
 
 #else
@@ -425,7 +433,11 @@ set_audio_config(void* vp, char* extradata, int extradata_size,
 #if defined(DISTRO_DEBIAN8)
     av_force_cpu_flags(FF_MM_SSE2 | FF_MM_MMX2);
 #else
-	psi->audio_codec_ctx->dsp_mask = FF_MM_SSE2 | FF_MM_MMX2;
+#if LIBAVCODEC_VERSION_MAJOR < 55
+    psi->audio_codec_ctx->dsp_mask = FF_MM_SSE2 | FF_MM_MMX2;
+#else
+    av_set_cpu_flags_mask(FF_MM_SSE2 | FF_MM_MMX2);
+#endif
 #endif
 
 #endif
