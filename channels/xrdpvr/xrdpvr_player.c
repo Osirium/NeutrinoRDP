@@ -83,10 +83,6 @@ debian 8
 
 */
 
-#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
-#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
-#endif
-
 #if LIBAVCODEC_VERSION_MAJOR == 52 && LIBAVCODEC_VERSION_MINOR == 20
 #define DISTRO_DEBIAN6
 #endif
@@ -193,6 +189,14 @@ static int display_picture(PLAYER_STATE_INFO *psi);
 
 #if defined(DISTRO_DEBIAN8)
 #define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
+#endif
+
+#ifndef SAMPLE_FMT_U8
+#define SAMPLE_FMT_U8 AV_SAMPLE_FMT_U8
+#endif
+
+#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000 // 1 second of 48khz 32bit audio
 #endif
 
 void* init_context(int codec_id);
